@@ -4,12 +4,17 @@
 #include <tr1/unordered_set>
 #include <iostream>
 #include <sstream>
-typedef std::tr1::unordered_set<std::string> us;
+#include <vector>
+
+typedef std::vector<std::string> vs;
 
 class Attribute {
 private:
 	std::string name;
-	us values;
+	// A set of values used for constant verification of values' existence
+	std::tr1::unordered_set<std::string> value_set;
+	// The values in a vector
+	vs values;
 	
 	std::string parseName(std::string line);
 public:
@@ -17,7 +22,7 @@ public:
 	bool inValues(const std::string & key) const;
 
 	const std::string & getName() const;
-	const us & getValues() const;
+	const vs & getValues() const;
 };
 
 

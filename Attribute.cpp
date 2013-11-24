@@ -19,7 +19,8 @@ Attribute::Attribute(const string line) {
 		token.clear();
 		trimmer >> token;
 		
-		values.insert(token);
+		value_set.insert(token);
+		values.push_back(token);
 	}
 }
 
@@ -32,7 +33,7 @@ string Attribute::parseName(string line) {
 }
 
 bool Attribute::inValues(const string & key) const {
-	if( values.find(key) == values.end() )
+	if( value_set.find(key) == value_set.end() )
 		return false;
 	else return true;
 }
@@ -41,7 +42,7 @@ const string & Attribute::getName() const {
 	return name;
 }
 
-const us & Attribute::getValues() const {
+const vs & Attribute::getValues() const {
 	return values;
 }
 

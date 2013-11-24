@@ -9,7 +9,7 @@ using namespace std;
 class NaiveBayes : public Learner {
 private:
 	const vector<Attribute> * attribs;
-	const us class_values; // An unordered set of the possible class labels
+	const vs class_values; // A vector of the possible class labels
 
 	vector<double> priors;
 	vector< vector< vector<double> > > probs; 	// Class < Attribute < Value > > >

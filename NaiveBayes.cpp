@@ -18,11 +18,11 @@ void NaiveBayes::train(const vector<Instance> & instances) {
 		for(int j=0; j<val_counts[i].size(); j++)
 			val_counts[i][j].resize(attribs->at(j).getValues().size(), 0);
 	// Iterate over instances
-	for(int i=0; i<instances.size(); i++) {
+/*	for(int i=0; i<instances.size(); i++) {
 		// Iterate over possible class label values
 		for(auto it = class_values.begin(); it != class_values.end(); it++) {
 			for(
-		}
+		}*/
 	
 }
 
