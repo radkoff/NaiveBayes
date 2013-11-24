@@ -31,12 +31,17 @@ string Attribute::parseName(string line) {
 	return parsing.substr(name_ends + 1);
 }
 
-string Attribute::getName() const {
-	return name;
-}
-
 bool Attribute::inValues(const string & key) const {
 	if( values.find(key) == values.end() )
 		return false;
 	else return true;
 }
+
+const string & Attribute::getName() const {
+	return name;
+}
+
+const us & Attribute::getValues() const {
+	return values;
+}
+
