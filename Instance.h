@@ -3,6 +3,7 @@
 
 #include "Attribute.h"
 #include <vector>
+#include <sstream>
 #include <tr1/unordered_map>
 
 using namespace std;
