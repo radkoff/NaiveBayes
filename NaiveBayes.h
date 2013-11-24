@@ -6,13 +6,18 @@
 
 using namespace std;
 
+typedef tr1::unordered_map<string, int> int_dict;
+typedef tr1::unordered_map<string, double> double_dict;
+
 class NaiveBayes : public Learner {
 private:
 	const vector<Attribute> * attribs;
 	const us class_values; // An unordered set of the possible class labels
 
-	vector<double> priors;
-	vector< vector< vector<double> > > probs; 	// Class < Attribute < Value > > >
+	int_dict & count_classes(int_dict & counts, const vector<Instance> & instances);
+
+	double_dict priors;
+	vector< vector< double_dict > > probs; 	// Class < Attribute < Value > > >
 public:
 	NaiveBayes(const vector<Attribute> * _attribs);
 	void train(const vector<Instance> & instances);
