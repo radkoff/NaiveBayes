@@ -1,13 +1,15 @@
 #ifndef _LEARNER_H_
 #define _LEARNER_H_
 
-#include "Attribute.h"
 #include "Instance.h"
 
 class Learner {
 public:
-	virtual void train(const std::vector<Instance> * instances);
-	virtual std::string classify(const Instance & instance);
-}
+	Learner();
+	virtual void train(const std::vector<Instance> & instances) = 0;
+	virtual std::string classify(const Instance & instance) = 0;
+};
+
+Learner::Learner() {}
 
 #endif
