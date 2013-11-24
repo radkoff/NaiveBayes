@@ -1,4 +1,5 @@
 #include <iostream>
+#include "ArffParse.h"
 
 using namespace std;
 enum Modes { NAIVE_BAYES, TAN };
@@ -26,7 +27,11 @@ void processArgs(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
 	processArgs(argc, argv);
-	cout << mode << endl;
+	ArffParse train_parse(train_file);
+	vector<Attribute> attribs = train_parse.getAttributes();
+	vector<Instance> training_instances = train_parse.getInstances();
+	cout << attribs.size() << endl;
+	cout << training_instances.size() << endl;
 }
 
 

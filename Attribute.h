@@ -1,19 +1,22 @@
 #ifndef _ATTRIBUTE_H_
 #define _ATTRIBUTE_H_
 
-#include <vector>
-#include <string>
-typedef std::vector<std::string> vs;
+#include <tr1/unordered_set>
+#include <iostream>
+#include <sstream>
+typedef std::tr1::unordered_set<std::string> us;
 
 class Attribute {
 private:
 	std::string name;
-	vs values;
-public:
-	Attribute(std::string _name, vs _values);
+	us values;
 	
-	const std::string getName() const;
-	const vs getValues() const;
+	std::string parseName(std::string line);
+public:
+	Attribute(const std::string line);
+	
+	std::string getName() const;
+	bool inValues(const std::string & key) const;
 };
 
 
