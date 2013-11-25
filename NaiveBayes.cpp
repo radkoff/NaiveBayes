@@ -24,7 +24,7 @@ void NaiveBayes::train(const vector<Instance> & instances) {
 
 void NaiveBayes::count_classes(int_dict & counts, const vector<Instance> & instances) {
 	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++)
-		counts.insert( make_pair<string, int>(*it, 0) );
+		counts[*it] = 0;
 	for(int i=0; i<instances.size(); i++) {
 		counts[ instances[i].valueOf("class") ] += 1;
 	}
@@ -36,10 +36,10 @@ void NaiveBayes::count_values(count_keeper & counts, const vector<Instance> & in
 		for(int i=0; i<attribs->size() - 1; i++) {
 			int_dict attrib_counts;
 			for(us::const_iterator it2 = attribs->at(i).getValues().begin(); it2 != attribs->at(i).getValues().end(); it2++)
-				attrib_counts.insert( make_pair<string, int>(*it2, 0));
+				attrib_counts[*it2] = 0;
 			features.push_back( attrib_counts );
 		}
-		counts.insert( make_pair<string, vector< int_dict > >(*it, features) );
+		counts[*it] = features;
 	}
 	for(int i=0; i<instances.size(); i++) {
 		string label = instances[i].valueOf("class");
@@ -56,7 +56,7 @@ void NaiveBayes::calc_probs(count_keeper & val_counts) {
 		for(int i=0; i<attribs->size() - 1; i++) {
 			features.push_back(normalize( val_counts[*it][i] ));
 		}
-		probs.insert( make_pair<string, vector< double_dict > >(*it, features));
+		probs[*it] = features;
 	}
 }
 
@@ -67,7 +67,7 @@ double_dict NaiveBayes::normalize(int_dict & counts) {
 	for(int_dict::iterator it = counts.begin(); it != counts.end(); it++)
 		total += it->second;
 	for(int_dict::iterator it = counts.begin(); it != counts.end(); it++)
-		dd.insert( make_pair<string, double>(it->first, (it->second+1)/((double)counts.size() + total)));
+		dd[it->first] = (it->second+1)/((double)counts.size() + total);
 	return dd;
 }
 
@@ -77,7 +77,7 @@ pair<string, double> NaiveBayes::classify(const Instance & instance) {
 		double prob = priors[*it];
 		for(int i=0; i<attribs->size() - 1; i++)
 			prob *= probs[*it][i][instance.valueOf(attribs->at(i).getName())];
-		results.insert( make_pair<string, double>(*it, prob) );
+		results[*it] = prob;
 	}
 	double total = 0.0;
 	for(double_dict::iterator it = results.begin(); it != results.end(); it++)
