@@ -1,30 +1,24 @@
+// Evan Radkoff
+// CS760 Homework 3
+// Implements Naive Bayes
+
 #include <iostream>
 #include "ArffParse.h"
 #include "NaiveBayes.h"
 
 using namespace std;
-enum Modes { NAIVE_BAYES, TAN };
 void evaluate(Learner & learner, vector<Instance> & tests);
 
 string train_file, test_file;
-int mode;
 
 void processArgs(int argc, char *argv[]) {
-	if(argc != 4) {
+	if(argc != 3) {
 		cerr << "Insufficient number of arguments." << endl;
-		cout << "Usage: " << argv[0] << " training_file.arff test_file.arff <n|t> (n for naive bayes, t for TAN)" << endl;
+		cout << "Usage: " << argv[0] << " training_file.arff test_file.arff" << endl;
 		exit(-1);
 	}
 	train_file = argv[1];
 	test_file = argv[2];
-	if(string(argv[3]) == "n")
-		mode = NAIVE_BAYES;
-	else if(string(argv[3]) == "t")
-		mode = TAN;
-	else {
-		cerr << "Illegal mode." << endl;
-		exit(-1);
-	}
 }
 
 int main(int argc, char *argv[]) {
@@ -34,11 +28,9 @@ int main(int argc, char *argv[]) {
 	vector<Instance> training_instances = train_parse.getInstances();
 	vector<Instance> test_instances = test_parse.getInstances();
 	
-	if( mode == NAIVE_BAYES ) {
-		NaiveBayes bayes( & attribs );
-		bayes.train( training_instances );
-		evaluate(bayes, test_instances);
-	}
+	NaiveBayes bayes( & attribs );
+	bayes.train( training_instances );
+	evaluate(bayes, test_instances);
 }
 
 void evaluate(Learner & learner, vector<Instance> & tests) {
