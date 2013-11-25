@@ -34,7 +34,7 @@ Instance::Instance(string input, const vector<Attribute> * _attribs) : attribs(_
 string Instance::valueOf(string key) const {
 	//return values.at(key);
 	string result = "";
-	ss_map::iterator it = values.find(key);
+	ss_map::const_iterator it = values.find(key);
 	if(it != values.end())
 		result = it->second;
 	return result;

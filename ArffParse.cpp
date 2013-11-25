@@ -13,7 +13,7 @@ ArffParse::ArffParse(string arff_file) {
 	while(ifs.good()) {
 		string line;
 		getline(ifs, line);
-		if(line[0] == '%') continue;
+		if(line[0] == '%' || line == "" || line == "\n") continue;
 		if(getting_data) {
 			instances.push_back( Instance(line, &attribs) );
 		} else if(line.substr(0,10) == "@attribute")

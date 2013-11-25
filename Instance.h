@@ -11,7 +11,7 @@ typedef tr1::unordered_map<string, string> ss_map;
 
 class Instance {
 private:
-	mutable ss_map values;
+	ss_map values;
 	const vector<Attribute> * attribs;
 	
 	void parse(string input);

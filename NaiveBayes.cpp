@@ -1,26 +1,28 @@
 #include "NaiveBayes.h"
 
 using namespace std;
-typedef vector<int> vi;
+//typedef vector<int> vi;
 
 NaiveBayes::NaiveBayes(const vector<Attribute> * _attribs)
 	: attribs(_attribs), class_values(_attribs->back().getValues()) {
 }
 
 void NaiveBayes::train(const vector<Instance> & instances) {
-	// Maintains counts of the # of occurances for each class
+	// Maintains counts of the # of occurances for each class label
 	int_dict class_counts;
 	count_classes(class_counts, instances);
-	// Counts the occurances of each value of each attribute, for each class
-	// Class < Attribute < Value
-	//vector< vector< int_dict > > val_counts(num_classes, vector< vi >(attribs->size()-1, vi()));
-	/*for(int i=0; i<val_counts.size(); i++)
-		for(int j=0; j<val_counts[i].size(); j++)
-			val_counts[i][j].resize(attribs->at(j).getValues().size(), 0);*/
-	cout << class_counts["malign_lymph"] << " " << class_counts["metastases"] << endl;
+	// Maintains counts of the # of occurances for each attribute value (for each class label)
+	// vector<vector<map<string,int>>>
+	count_keeper val_counts;
+	count_values(val_counts, instances);
+
+	priors = normalize(class_counts);
+	calc_probs(val_counts);
+	//print_counts(val_counts);
+	//print_probs();
 }
 
-int_dict & NaiveBayes::count_classes(int_dict & counts, const vector<Instance> & instances) {
+void NaiveBayes::count_classes(int_dict & counts, const vector<Instance> & instances) {
 	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++)
 		counts.insert( make_pair<string, int>(*it, 0) );
 	for(int i=0; i<instances.size(); i++) {
@@ -28,7 +30,74 @@ int_dict & NaiveBayes::count_classes(int_dict & counts, const vector<Instance> &
 	}
 }
 
+void NaiveBayes::count_values(count_keeper & counts, const vector<Instance> & instances) {
+	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
+		vector< int_dict > features;
+		for(int i=0; i<attribs->size() - 1; i++) {
+			int_dict attrib_counts;
+			for(us::const_iterator it2 = attribs->at(i).getValues().begin(); it2 != attribs->at(i).getValues().end(); it2++)
+				attrib_counts.insert( make_pair<string, int>(*it2, 0));
+			features.push_back( attrib_counts );
+		}
+		counts.insert( make_pair<string, vector< int_dict > >(*it, features) );
+	}
+	for(int i=0; i<instances.size(); i++) {
+		string label = instances[i].valueOf("class");
+		for(int j=0; j<attribs->size() - 1; j++) {
+			counts[label][j][ instances[i].valueOf(attribs->at(j).getName()) ] += 1;
+		}
+	}
+}
+
+// Responsible for populating the probs data member
+void NaiveBayes::calc_probs(count_keeper & val_counts) {
+	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
+		vector<double_dict> features;
+		for(int i=0; i<attribs->size() - 1; i++) {
+			features.push_back(normalize( val_counts[*it][i] ));
+		}
+		probs.insert( make_pair<string, vector< double_dict > >(*it, features));
+	}
+}
+
+// Also adds LaPlace estimation
+double_dict NaiveBayes::normalize(int_dict & counts) {
+	double_dict dd;
+	int total = 0;
+	for(int_dict::iterator it = counts.begin(); it != counts.end(); it++)
+		total += it->second;
+	for(int_dict::iterator it = counts.begin(); it != counts.end(); it++)
+		dd.insert( make_pair<string, double>(it->first, (it->second+1)/((double)counts.size() + total)));
+	return dd;
+}
+
 string NaiveBayes::classify(const Instance & instance) {
 
 }
 
+void NaiveBayes::print_counts(count_keeper & counts) {
+	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
+		cout << *it << ":\n";
+		for(int i=0; i<attribs->size() - 1; i++) {
+			cout << attribs->at(i).getName() << ":\t\t";
+			for(us::const_iterator it2 = attribs->at(i).getValues().begin(); it2 != attribs->at(i).getValues().end(); it2++)
+				cout << *it2 << ": " << counts[*it][i][*it2] << "\t";
+			cout << endl;
+		}
+		cout << endl;
+	}
+}
+
+
+void NaiveBayes::print_probs() {
+	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
+		cout << *it << ":\n";
+		for(int i=0; i<attribs->size() - 1; i++) {
+			cout << attribs->at(i).getName() << ":\t\t";
+			for(us::const_iterator it2 = attribs->at(i).getValues().begin(); it2 != attribs->at(i).getValues().end(); it2++)
+				cout << *it2 << ": " << probs[*it][i][*it2] << "\t";
+			cout << endl;
+		}
+		cout << endl;
+	}
+}
