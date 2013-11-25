@@ -28,7 +28,8 @@ private:
 public:
 	NaiveBayes(const vector<Attribute> * _attribs);
 	void train(const vector<Instance> & instances);
-	string classify(const Instance & instance);
+	pair<string, double> classify(const Instance & instance);
+	void print();
 };
 
 #endif

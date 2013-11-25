@@ -71,11 +71,32 @@ double_dict NaiveBayes::normalize(int_dict & counts) {
 	return dd;
 }
 
-string NaiveBayes::classify(const Instance & instance) {
-
+pair<string, double> NaiveBayes::classify(const Instance & instance) {
+	double_dict results;
+	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
+		double prob = priors[*it];
+		for(int i=0; i<attribs->size() - 1; i++)
+			prob *= probs[*it][i][instance.valueOf(attribs->at(i).getName())];
+		results.insert( make_pair<string, double>(*it, prob) );
+	}
+	double total = 0.0;
+	for(double_dict::iterator it = results.begin(); it != results.end(); it++)
+		total += it->second;
+	double_dict::iterator best = results.begin();
+	for(double_dict::iterator it = results.begin(); it != results.end(); it++) {
+		it->second = it->second / total;
+		if(it->second > best->second)
+			best = it;
+	}
+	return *best;
 }
 
-void NaiveBayes::print_counts(count_keeper & counts) {
+void NaiveBayes::print() {
+	for(int i=0; i<attribs->size() - 1; i++)
+		cout << attribs->at(i).getName() << " class" << endl;
+}
+
+/*void NaiveBayes::print_counts(count_keeper & counts) {
 	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
 		cout << *it << ":\n";
 		for(int i=0; i<attribs->size() - 1; i++) {
@@ -88,7 +109,6 @@ void NaiveBayes::print_counts(count_keeper & counts) {
 	}
 }
 
-
 void NaiveBayes::print_probs() {
 	for(us::const_iterator it = class_values.begin(); it!=class_values.end(); it++) {
 		cout << *it << ":\n";
@@ -100,4 +120,4 @@ void NaiveBayes::print_probs() {
 		}
 		cout << endl;
 	}
-}
+}*/

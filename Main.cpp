@@ -4,6 +4,7 @@
 
 using namespace std;
 enum Modes { NAIVE_BAYES, TAN };
+void evaluate(Learner & learner, vector<Instance> & tests);
 
 string train_file, test_file;
 int mode;
@@ -28,13 +29,28 @@ void processArgs(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
 	processArgs(argc, argv);
-	ArffParse train_parse(train_file);
+	ArffParse train_parse(train_file), test_parse(test_file);
 	vector<Attribute> attribs = train_parse.getAttributes();
 	vector<Instance> training_instances = train_parse.getInstances();
+	vector<Instance> test_instances = test_parse.getInstances();
 	
-	NaiveBayes bayes( & attribs );
-	bayes.train( training_instances );
+	if( mode == NAIVE_BAYES ) {
+		NaiveBayes bayes( & attribs );
+		bayes.train( training_instances );
+		evaluate(bayes, test_instances);
+	}
 }
 
-
+void evaluate(Learner & learner, vector<Instance> & tests) {
+	int correct = 0;
+	learner.print();
+	cout << endl;
+	for(int i=0; i<tests.size(); i++) {
+		string answer = tests[i].valueOf("class");
+		pair<string, double> result = learner.classify(tests[i]);
+		cout << result.first << " " << answer << " " << result.second << endl;
+		if(answer == result.first) correct++;
+	}
+	cout << endl << correct << endl;
+}
 
