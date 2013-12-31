@@ -1,0 +1,3 @@
+This program implements Naive Bayes classificaiton using C++. Data is read as ARFF files (http://www.cs.waikato.ac.nz/~ml/weka/arff.html). Currently, sparse data sets and missing values are not supported.
+To run the classifier, supply the training set and test set ARFF files as arguments. For convenience, lymph_train.arff and lymph_test.arff are given.
+

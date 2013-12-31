@@ -22,4 +22,4 @@ public:
 	string valueOf(string key) const;
 };
 
-#endif _INSTANCE_H_
+#endif

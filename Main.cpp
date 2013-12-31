@@ -1,6 +1,5 @@
 // Evan Radkoff
-// CS760 Homework 3
-// Implements Naive Bayes
+// Implements Naive Bayes classification with categorical data found in ARFF files
 
 #include <iostream>
 #include "ArffParse.h"
@@ -33,6 +32,9 @@ int main(int argc, char *argv[]) {
 	evaluate(bayes, test_instances);
 }
 
+/*
+ *  Evaluates the performance of a learner given a vector of test instances
+ */
 void evaluate(Learner & learner, vector<Instance> & tests) {
 	int correct = 0;
 	learner.print();
